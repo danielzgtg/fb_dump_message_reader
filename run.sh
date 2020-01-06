@@ -1,2 +1,2 @@
 #!/bin/bash
-./target/release/messagereader > output.txt
+./target/release/fb_dump_message_reader > output.txt
