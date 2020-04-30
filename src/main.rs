@@ -1,6 +1,8 @@
+extern crate chrono;
 extern crate serde_json;
 extern crate unicode_segmentation;
 
+use chrono::{DateTime, NaiveDateTime, Utc};
 use std::env;
 use std::fs;
 use serde_json::Value;
@@ -14,17 +16,23 @@ fn main() {
   let messages = &parsed["messages"];
   let messages = messages.as_array().expect("error coercing message array");
   if messages.len() == 0 { return }
-  let namewidth = messages.iter().map(|x| x["sender_name"].as_str().expect("expected sender str").graphemes(true).count()).max().unwrap();
+  let namewidth = messages.iter().map(|x| repair_fb_str(
+    x["sender_name"].as_str().expect("expected sender str")
+  ).graphemes(true).count()).max().unwrap();
   for x in messages.iter().rev() {
     //let t = &x["type"];
     //if t != "Generic" {
     //  continue;
     //}
+    let t = x["timestamp_ms"].as_i64().expect("error parsing timestamp");
+    let t = NaiveDateTime::from_timestamp(t / 1000, 0 /*ignore millis*/);
+    let t = DateTime::<Utc>::from_utc(t, Utc);
+    let t = t.format("%Y-%m-%d %H:%M:%S").to_string();
     let c = x["content"].as_str().unwrap_or("[missing]");
     let c = repair_fb_str(c);
     let s = x["sender_name"].as_str().unwrap();
     let s = repair_fb_str(s);
-    println!("{:0width$}: {}", s, c, width = namewidth);
+    println!("[{}] {:0width$}: {}", t, s, c, width = namewidth);
   }
 }
 
