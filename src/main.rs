@@ -21,6 +21,8 @@ fn main() {
     //  continue;
     //}
     let c = x["content"].as_str().unwrap_or("[missing]");
+    let c = c.chars().map(|x| x as u8).collect::<Vec<u8>>();
+    let c = std::str::from_utf8(&c).expect("failed to repair facebook utf8");
     let s = x["sender_name"].as_str().unwrap();
     println!("{:0width$}: {}", s, c, width = namewidth);
   }
