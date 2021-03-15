@@ -5,6 +5,6 @@ authors = ["Daniel Tang <danielzgtg.opensource@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-chrono = "0.4"
-serde_json = "1.0"
-unicode-segmentation = "1.6.0"
+chrono = "0.4.19"
+serde_json = "1.0.64"
+unicode-segmentation = "1.7.1"

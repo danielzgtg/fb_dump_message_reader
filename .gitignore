@@ -1,4 +1,7 @@
-/target
 **/*.rs.bk
+*.iml
+/.idea
+/messages
+/target
 message_1.json
 output.txt
