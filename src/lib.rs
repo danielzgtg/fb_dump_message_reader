@@ -1,8 +1,7 @@
-use std::io::Write;
-
 use chrono::{DateTime, NaiveDateTime, Utc};
 use serde_json::Value;
 use unicode_segmentation::UnicodeSegmentation;
+use std::fmt::Write;
 
 fn repair_fb_str(input: &str) -> String {
     let raw = input.chars().map(|x| x as u8).collect::<Vec<u8>>();
