@@ -1,5 +1,5 @@
 use std::fs;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::Path;
 
@@ -26,6 +26,7 @@ fn main() {
                 continue;
             }
             let name = entry.file_name();
+            let name = name.as_os_str().to_str().expect("corrupt thread name");
             for entry in path.read_dir().expect("couldn't read thread folder") {
                 let entry = entry.expect("failed to read thread folder entry");
                 let path = entry.path();
@@ -45,8 +46,8 @@ fn main() {
                 f.read_to_string(&mut read_buf).expect("error reading thread");
                 let parsed: Value = serde_json::from_str(&read_buf).expect("error parsing json");
                 convert(&parsed, &mut write_buf, &mut stats);
-                let target_path = parsed_path.join(name.as_os_str());
-                let mut f = File::create(target_path)
+                let target_path = parsed_path.join(format!("{}.txt", name));
+                let mut f = OpenOptions::new().write(true).create_new(true).open(target_path)
                     .expect("error creating result file");
                 f.write((&write_buf).as_ref()).expect("error writing result");
             }
